@@ -3,7 +3,7 @@ Coursera: C++ Development Fundamentals: Brown Belt: Week 2
 
 Condition
 
-You have joined the team that is developing the comment web server. This server allows you to create new users, post new ads, and read all the ads of the selected user. 
+Imagine - You have joined the team that is developing the comment web server. This server allows you to create new users, post new ads, and read all the ads of the selected user. 
 In addition, the team has recently attended to the fight against spammers. If a user is recognized as a spammer, he is blocked, after which he is given a captcha page, 
 on which he must confirm that he is a human. If the captcha is successfully entered, the user will be unblocked and will be able to post comments again.
 
@@ -48,6 +48,7 @@ HTTP/1.1 [response code] [comment]
 <empty line>
 [Response body]
 ```
-- the response code is 200, 302, 404, etc.
-- comment - "Found", "OK", "Not found", etc.
+- Response code is 200, 302, 404, etc.
+- Comment - "Found", "OK", "Not found", etc.
 - Header X - Header name, eg "Location"
+- Response body for example, this is the content of the captcha page or the identifier of a newly added user; however, if the response body is non-empty, the response must contain the ```Content-Length``` header, the value of which is equal to the response length in bytes.
