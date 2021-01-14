@@ -3,8 +3,8 @@
 //       especially JavaScript. In C++, chaining also has its own niche. The pointer "this" is needed to implement chaining.
 //
 
-//#include "test_runner.h"
-#include "..\..\test_runner.h"
+#include "test_runner.h"
+//#include "..\..\test_runner.h"
 
 #include <vector>
 #include <string>
@@ -31,28 +31,23 @@ enum class HttpCode {
 class HttpResponse {
 public:
     explicit HttpResponse(HttpCode code) : _code(code) {}
-
+    
     HttpResponse& AddHeader(string name, string value) {
-        if (_content.empty()) {
-            _headers.insert({ move(name), move(value) });
-        }
+        _headers.insert({ move(name), move(value) });
         return *this;
     }
 
     HttpResponse& SetContent(string a_content) {
         _content = move(a_content);
-        if (!_content.empty()) {
-            _headers.clear();
-            _headers.insert({ "Content-Length", to_string(_content.size()) });
-        }
+        _headers.erase("Content-Length");
+        _headers.insert({ "Content-Length", to_string(_content.size()) });
         return *this;
     }
-
     HttpResponse& SetCode(HttpCode a_code) {
         _code = a_code;
         return *this;
     }
-
+    
     HttpCode GetCode() const { return _code; }
     const multimap<string, string>& GetHeaders() const { return _headers; }
     const string& GetContent() const { return _content; }
@@ -69,8 +64,9 @@ private:
 
 map<HttpCode, string> HttpResponse::_CODES_ = {
     {HttpCode::Ok, "OK"},
-    {HttpCode::NotFound, "NotFound"},
-    {HttpCode::Found, "Found"} };
+    {HttpCode::NotFound, "Not found"},
+    {HttpCode::Found, "Found"} 
+};
 
 ostream& operator<<(ostream& output, const HttpResponse& resp) {
     output << "HTTP/1.1 " << static_cast<int>(resp.GetCode()) << ' '
@@ -113,7 +109,7 @@ struct LastCommentInfo {
 class CommentServer {
 private:
     vector<vector<string>> comments_;
-    std::optional<LastCommentInfo> last_comment;
+    optional<LastCommentInfo> last_comment;
     unordered_set<size_t> banned_users;
 
 public:
@@ -239,8 +235,7 @@ istream& operator>>(istream& input, ParsedResponse& r) {
     return input;
 }
 
-void Test(CommentServer& srv, const HttpRequest& request,
-    const ParsedResponse& expected) {
+void Test(CommentServer& srv, const HttpRequest& request, const ParsedResponse& expected) {
     stringstream ss;
     HttpResponse response = srv.ServeRequest(request);
     ParsedResponse resp;
@@ -289,4 +284,11 @@ void TestServer() {
 int main() {
     TestRunner tr;
     RUN_TEST(tr, TestServer<CommentServer>);
+    //HttpResponse resp{ HttpCode::Found };
+    //resp.AddHeader("Content-Length", "42").
+    //    AddHeader("Header1", "Value1").
+    //    AddHeader("Header2", "Value2").
+    //    SetContent("hi").
+    //    SetContent("hihi");
+    //cout << resp;
 }
